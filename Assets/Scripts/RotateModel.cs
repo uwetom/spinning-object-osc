@@ -27,6 +27,8 @@ public class RotateModel : MonoBehaviour
 
     public List<float> previousAngles;
 
+    private List<Quaternion> previousQuaternions;
+
     private Quaternion previousAngle;
 
     private OSCReceiver _receiver;
@@ -45,6 +47,7 @@ public class RotateModel : MonoBehaviour
 		previousAngle = Quaternion.Euler(0,0,0);
 
 		previousAngles = new List<float>();
+        previousQuaternions = new List<Quaternion>();
 
         _receiver = gameObject.GetComponent<OSCReceiver>();
 
@@ -53,7 +56,15 @@ public class RotateModel : MonoBehaviour
 
     void Update(){
 
-    	 Quaternion current = Quaternion.Euler(yRotVal, xRotVal,0);
+    	 Quaternion current = Quaternion.Euler(xRotVal,0,yRotVal);
+
+         previousQuaternions.Add(current);
+
+        //only store last 10 quaternions
+		if(previousQuaternions.Count >= 20){
+			previousQuaternions.RemoveAt(0);
+		}
+
 
     	 float angle = Quaternion.Angle(previousAngle, current);
 
@@ -75,7 +86,7 @@ public class RotateModel : MonoBehaviour
 			total += previousAngles[i];
 		}
 		float average = total/previousAngles.Count;
-		Debug.Log(average);
+		//Debug.Log(average);
 
 		//if(average <= 0.1){
 		//	rotationObject.GetComponent<Renderer>().material = opaqueMaterial;
@@ -83,7 +94,10 @@ public class RotateModel : MonoBehaviour
  		
 		//}else{
 			rotationObject.GetComponent<Renderer>().material = transparentMaterial;
- 			rotationObject.GetComponent<Renderer>().material.color = new Color(1.0f,1.0f,1.0f, 1.0f-(average/10.0f));
+
+            float calTransparency = 1.0f-(average/10.0f);
+            calTransparency = Mathf.Clamp(calTransparency,0,1);
+ 			rotationObject.GetComponent<Renderer>().material.color = new Color(1.0f,1.0f,1.0f,calTransparency );
  		//}
  		// = new Color(255f,255f,255f,1-(average/20));
 
@@ -93,7 +107,15 @@ public class RotateModel : MonoBehaviour
 
           // Quaternion target = Quaternion.Euler(xSlider.value, ySlider.value, zSlider.value);
 
-        transform.rotation = current;
+        transform.rotation = AverageQuaternion();
+        //Quaternion.Lerp(current,previousAngle,0.25f);
+
+
+        if(Input.GetKeyDown(KeyCode.Escape)){
+		    Application.Quit();
+        }
+
+
     }
 
     public void OpacityValueChangeCheck()
@@ -116,7 +138,7 @@ public class RotateModel : MonoBehaviour
 
         //GetComponent<Renderer>().material.SetFloat("_Opacity",opacitySlider.value);
 
-          Quaternion target = Quaternion.Euler(xSlider.value, ySlider.value, zSlider.value);
+         // Quaternion target = Quaternion.Euler(xSlider.value, ySlider.value, zSlider.value);
 
         // Dampen towards the target rotation
         //  float smooth = 5.0f;
@@ -131,10 +153,66 @@ public class RotateModel : MonoBehaviour
     // MessageReceived implementation
     protected void MessageReceived(OSCMessage message)
     {
-        xRotVal = (float)message.Values[0].DoubleValue + 90;
-        yRotVal = (float)message.Values[1].DoubleValue + 90;
+        xRotVal = (float)message.Values[0].DoubleValue;
+        yRotVal = (float)message.Values[1].DoubleValue;
         //Debug.Log("xRotVal");
         //Debug.Log(xRotVal);
+    }
+
+
+    private Quaternion AverageQuaternion(){
+
+        //Global variable which holds the amount of rotations which
+        //need to be averaged.
+        int addAmount = previousQuaternions.Count;
+        
+        //Global variable which represents the additive quaternion
+        Quaternion addedRotation = Quaternion.identity;
+        
+        //The averaged rotational value
+        Quaternion averageRotation = new Quaternion(0,0,0,0);
+        
+        //multipleRotations is an array which holds all the quaternions
+        //which need to be averaged.
+       // Quaternion[] multipleRotations new Quaternion[totalAmount];
+        
+        //Loop through all the rotational values.
+        foreach(Quaternion singleRotation in previousQuaternions){
+        
+            //Temporary values
+            float w;
+            float x;
+            float y;
+            float z;
+        
+            //Amount of separate rotational values so far
+            addAmount++;
+        
+            float addDet = 1.0f / (float)addAmount;
+            addedRotation.w += singleRotation.w;
+            w = addedRotation.w * addDet;
+            addedRotation.x += singleRotation.x;
+            x = addedRotation.x * addDet;
+            addedRotation.y += singleRotation.y;
+            y = addedRotation.y * addDet;
+            addedRotation.z += singleRotation.z;
+            z = addedRotation.z * addDet;
+        
+            //Normalize. Note: experiment to see whether you
+            //can skip this step.
+            float D = 1.0f / (w*w + x*x + y*y + z*z);
+            w *= D;
+            x *= D;
+            y *= D;
+            z *= D;
+        
+            //The result is valid right away, without
+            //first going through the entire array.
+            averageRotation = new Quaternion(x, y, z, w);
+        }
+
+        return averageRotation;
+
     }
 
 }
