@@ -35,6 +35,7 @@ public class RotateModel : MonoBehaviour
 
     private float xRotVal = 0;
     private float yRotVal = 0;
+    private float zRotVal = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -56,7 +57,7 @@ public class RotateModel : MonoBehaviour
 
     void Update(){
 
-    	 Quaternion current = Quaternion.Euler(xRotVal,0,yRotVal);
+    	 Quaternion current = Quaternion.Euler(yRotVal,-zRotVal,-xRotVal);
 
          previousQuaternions.Add(current);
 
@@ -66,7 +67,7 @@ public class RotateModel : MonoBehaviour
 		}
 
 
-    	 float angle = Quaternion.Angle(previousAngle, current);
+    	float angle = Quaternion.Angle(previousAngle, current);
 
         
         previousAngle = current;
@@ -95,7 +96,7 @@ public class RotateModel : MonoBehaviour
 		//}else{
 			rotationObject.GetComponent<Renderer>().material = transparentMaterial;
 
-            float calTransparency = 1.0f-(average/10.0f);
+            float calTransparency = 1.0f-(average/30.0f);
             calTransparency = Mathf.Clamp(calTransparency,0,1);
  			rotationObject.GetComponent<Renderer>().material.color = new Color(1.0f,1.0f,1.0f,calTransparency );
  		//}
@@ -107,7 +108,7 @@ public class RotateModel : MonoBehaviour
 
           // Quaternion target = Quaternion.Euler(xSlider.value, ySlider.value, zSlider.value);
 
-        transform.rotation = AverageQuaternion();
+        transform.rotation = current;
         //Quaternion.Lerp(current,previousAngle,0.25f);
 
 
@@ -153,10 +154,9 @@ public class RotateModel : MonoBehaviour
     // MessageReceived implementation
     protected void MessageReceived(OSCMessage message)
     {
-        xRotVal = (float)message.Values[0].DoubleValue;
-        yRotVal = (float)message.Values[1].DoubleValue;
-        //Debug.Log("xRotVal");
-        //Debug.Log(xRotVal);
+        xRotVal = message.Values[0].FloatValue;
+        yRotVal = message.Values[1].FloatValue;
+        zRotVal = message.Values[2].FloatValue;
     }
 
 

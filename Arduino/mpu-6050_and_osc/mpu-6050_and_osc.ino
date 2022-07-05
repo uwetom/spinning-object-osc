@@ -1,7 +1,10 @@
 #include<Wire.h>
+#include <MPU6050_light.h>
 #include <math.h>
 #include <WiFi.h>
 #include <ArduinoOSCWiFi.h>
+
+MPU6050 mpu(Wire);
 
 const int MPU=0x68;
 int16_t AcX,AcY,AcZ,Tmp,GyX,GyY,GyZ;
@@ -17,21 +20,44 @@ const int   rxPort   = 9000;
 const int   txPort   = 8000;
 int uptime = 0;
 
+
+
 void setup(){
   delay(10);
+ /*
   Wire.begin();
   Wire.beginTransmission(MPU);
   Wire.write(0x6B);
   Wire.write(0x00);
   Wire.endTransmission(true);
-  Serial.begin(9600);
+  */
   
-  calculate_IMU_error();
+  Serial.begin(9600);
+
+  Wire.begin();
+  
+  byte status = mpu.begin();
+  Serial.print(F("MPU6050 status: "));
+  Serial.println(status);
+  while(status!=0){ } // stop everything if could not connect to MPU6050
+  
+  Serial.println(F("Calculating offsets, do not move MPU6050"));
+  delay(1000);
+  mpu.calcOffsets(true,true); // gyro and accelero
+  Serial.println("Done!\n");
+
+
+
+
+  
+  //calculate_IMU_error();
 
   setupWIFI();
+  
 }
 
 void loop(){
+  /*
   Wire.beginTransmission(MPU);
   Wire.write(0x3B);
   Wire.endTransmission(false);
@@ -63,26 +89,42 @@ void loop(){
   
  
   Serial.println(" ");
+  */
 
-    OscWiFi.update();  // must be called to receive + send osc
+  mpu.update();
 
-    Serial.print("IP address: ");
-    Serial.println(WiFi.softAPIP());
 
-    Serial.print("Uptime: ");
-    Serial.print(++uptime, DEC);
-    Serial.println();
+     /* Serial.print(F("ANGLE     X: "));Serial.print(mpu.getAngleX());
+    Serial.print("\tY: ");Serial.print(mpu.getAngleY());
+    Serial.print("\tZ: ");Serial.println(mpu.getAngleZ());
 
-    //String sendString = String(pitch);
-   // sendString.concat(" ");
-   // sendString.concat(roll);
-    OscWiFi.send("255.255.255.255", txPort, "/pos/", pitch,roll);
-    
+
+*/
+  
+
+  OscWiFi.update();  // must be called to receive + send osc
+
+  Serial.print("IP address: ");
+  Serial.println(WiFi.softAPIP());
+
+/*
+  Serial.print("Uptime: ");
+  Serial.print(++uptime, DEC);
+  Serial.println();
+*/
+  //String sendString = String(pitch);
+ // sendString.concat(" ");
+ // sendString.concat(roll);
+
+ 
+  OscWiFi.send("255.255.255.255", txPort, "/pos/", mpu.getAngleX(),mpu.getAngleY(),mpu.getAngleZ());
+  
 
 
   delay(50);
 }
 
+/*
 //convert the accel data to pitch/roll
 void getAngle(int Vx,int Vy,int Vz) {
   double x = Vx;
@@ -95,8 +137,9 @@ void getAngle(int Vx,int Vy,int Vz) {
   pitch = pitch * (180.0/3.14);
   roll = roll * (180.0/3.14) ;
 }
+*/
 
-
+/*
 void calculate_IMU_error() {
   // We can call this funtion in the setup section to calculate the accelerometer and gyro data error. From here we will get the error values used in the above equations printed on the Serial Monitor.
   // Note that we should place the IMU flat in order to get the proper values, so that we then can the correct values
@@ -155,16 +198,17 @@ int c = 0;
 
 
 }
+*/
 
 void setupWIFI(){
      // create and broadcast access point ssid
     WiFi.mode(WIFI_AP);
     WiFi.softAP(ssid, NULL);
 
-    Serial.println();
-    Serial.println();
-    Serial.print("Broadcasting as WiFi SSID: ");
-    Serial.println(ssid);
+   // Serial.println();
+    //Serial.println();
+    //Serial.print("Broadcasting as WiFi SSID: ");
+    //Serial.println(ssid);
 
     int tick = 0;
     while (++tick < 5) {
@@ -172,14 +216,13 @@ void setupWIFI(){
         Serial.print(".");
     }
 
-    Serial.print("Listening for OSC on port: ");
-    Serial.println(rxPort, DEC);
-    OscWiFi.subscribe(rxPort, "/ping", onPing);
+   // Serial.print("Listening for OSC on port: ");
+    //Serial.println(rxPort, DEC);
+    //OscWiFi.subscribe(rxPort, "/ping", onPing);
     
-    Serial.print("Transmitting OSC on port: ");
-    Serial.println(txPort, DEC);
-    OscWiFi.send("255.255.255.255", txPort, "/loadbang");
+    //Serial.print("Transmitting OSC on port: ");
+    //Serial.println(txPort, DEC);
+   // OscWiFi.send("255.255.255.255", txPort, "/loadbang");
 
    
 }
-
