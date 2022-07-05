@@ -40,11 +40,7 @@ public class RotateModel : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        // opacitySlider.onValueChanged.AddListener(delegate {OpacityValueChangeCheck(); });
-        // xSlider.onValueChanged.AddListener(delegate {rotationValueChangeCheck(); });
-        // ySlider.onValueChanged.AddListener(delegate {rotationValueChangeCheck(); });
-       //  zSlider.onValueChanged.AddListener(delegate {rotationValueChangeCheck(); });
-		
+     
 		previousAngle = Quaternion.Euler(0,0,0);
 
 		previousAngles = new List<float>();
@@ -115,41 +111,7 @@ public class RotateModel : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape)){
 		    Application.Quit();
         }
-
-
     }
-
-    public void OpacityValueChangeCheck()
-    {
-     
- 	//	rotationObject.GetComponent<Renderer>().material.color.a = opacitySlider.value;
-   
-
-
-      
-
-       // rotationObject.GetComponent<Renderer>().material.SetFloat("_Opacity",opacitySlider.value);
-   
-
-    }
-
-    public void rotationValueChangeCheck()
-    {
-       
-
-        //GetComponent<Renderer>().material.SetFloat("_Opacity",opacitySlider.value);
-
-         // Quaternion target = Quaternion.Euler(xSlider.value, ySlider.value, zSlider.value);
-
-        // Dampen towards the target rotation
-        //  float smooth = 5.0f;
-      
-       // Quaternion.Slerp(transform.rotation, target,  Time.deltaTime * smooth);
-
-
-       
-    }
-
 
     // MessageReceived implementation
     protected void MessageReceived(OSCMessage message)
@@ -159,7 +121,7 @@ public class RotateModel : MonoBehaviour
         zRotVal = message.Values[2].FloatValue;
     }
 
-
+    // Average a list of Quaternion
     private Quaternion AverageQuaternion(){
 
         //Global variable which holds the amount of rotations which
