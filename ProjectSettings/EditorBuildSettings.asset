@@ -8,7 +8,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: d1c3109bdb54ad54c8a2b2838528e640
-  - enabled: 1
-    path: Assets/Scenes/rotatingObject.unity
+  - enabled: 0
+    path: Assets/Scenes/rotatingObject-osc.unity
     guid: bd43b516075754f4289f9defecd1d3ba
+  - enabled: 1
+    path: Assets/Scenes/rotatingObject -mouse.unity
+    guid: 2e9f733735973374fa4a980970e0dc7d
   m_configObjects: {}
