@@ -5,18 +5,18 @@ using UnityEngine.UI;
 
 public class RotateModelMouse : MonoBehaviour
 {	
-	public GameObject rotationObject;
-    public float transparencySensitivity = 10f;
-    public int transparencySmoothing = 10;
+	public GameObject rotationObject; // the container is being rotated, we need the inner object to change the material
+    public float transparencySensitivity = 1f; //
+    public int transparencySmoothing = 10; //averages out the last x values to calculate transparency 
 
-    private bool transparent = false;
+    private bool transparent = false; //is the object currenly transparent
 
-    public Material opaqueMaterial;
-    public Material transparentMaterial;
+    public Material opaqueMaterial; //opaque material to apply when the object is still
+    public Material transparentMaterial; //transparent material to apply when the object is moving
 
-    public float speed = 0;
+    public float speed = 0; // roatational speed of the object.
 
-    public List<float> previousQuaternionDifferences;
+    public List<float> previousQuaternionDifferences; // 
 
     private List<Quaternion> previousQuaternions;
 
@@ -24,11 +24,11 @@ public class RotateModelMouse : MonoBehaviour
 
     private Vector3 currentAngle;
 
-    private List<Vector3> previousAngles;
+    private List<Vector3> previousAngles; //list of differences between current angle and previous angle
 
-    private Quaternion current;
+    private Quaternion current; // current angle of the object
 
-    public float playbackSpeed = 1/100;
+    public float playbackSpeed = 1/100; //
     
     private float previousTime = 0;
 
@@ -38,25 +38,22 @@ public class RotateModelMouse : MonoBehaviour
 
     private float nextModeChangeTime = 0;
 
-    // Start is called before the first frame update
+ 
     void Start()
     {
-		previousAngle = Quaternion.Euler(0,0,0);
-
+		
+        previousAngle = Quaternion.Euler(0,0,0);
 		previousAngles = new List<Vector3>();
-
         previousQuaternions = new List<Quaternion>();
-
         previousQuaternionDifferences = new List<float>();
-
         current = Quaternion.Euler(0,0,0);
 
+        //hide the cusor and lock to center of screen
         Cursor.lockState = CursorLockMode.Locked;
-         Cursor.visible = false; 
+        Cursor.visible = false; 
 
+        //set first mode change time
         nextModeChangeTime = Time.time + Random.Range(9,11);
-
-        //opaqueMaterial = rotationObject.GetComponent<Renderer>().material;
 
     }
 
@@ -101,13 +98,22 @@ public class RotateModelMouse : MonoBehaviour
 	
         //set object transparency
         float newTransparency = calculateTransparency();
-        if(newTransparency < 0.8f && !transparent){
+
+
+        if(newTransparency < 0.98f && !transparent){
             rotationObject.GetComponent<Renderer>().material = transparentMaterial;
-            rotationObject.GetComponent<Renderer>().material.color = new Color(1.0f,1.0f,1.0f,newTransparency);
+
+            
+
+           // rotationObject.GetComponent<Renderer>().material.OpacinewTransparency);
             transparent = true;
-        }else if(newTransparency >= 0.8f && transparent){
+        }else if(newTransparency >= 0.98f && transparent){
             rotationObject.GetComponent<Renderer>().material = opaqueMaterial;
             transparent = false;
+        }
+
+        if(transparent){
+            rotationObject.GetComponent<Renderer>().sharedMaterial.SetFloat("_Opacity", newTransparency);
         }
               
         //set scale
@@ -118,12 +124,6 @@ public class RotateModelMouse : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.Escape)){
 		    Application.Quit();
         }
-
-
-       // if(previousAngles.Count){
-
-       // }
-
 
         //check if switch mode
 
@@ -151,15 +151,14 @@ public class RotateModelMouse : MonoBehaviour
             }
         }
 
-       Debug.Log(newTransparency);
+       
     }
 
-    // MessageReceived implementation
+   //Check the position of the mouse, add to 
     protected void CheckMousePosition()
     {   
-
+        //
         previousAngles.Add(currentAngle);
-
 
         float mouseX = -Input.GetAxis("Mouse X") * 3;
         float mouseY = Input.GetAxis("Mouse Y") * 3;
@@ -183,7 +182,7 @@ public class RotateModelMouse : MonoBehaviour
         float calTransparency = 1.0f-(average/transparencySensitivity);
 
         //clamp transparency between 0 and 1
-        calTransparency = Mathf.Clamp(calTransparency,0f,255f);
+        calTransparency = Mathf.Clamp(calTransparency,0.5f,1);
 
         return calTransparency;
     }

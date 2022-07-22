@@ -1,0 +1,10 @@
+ 9DoF stick (LSM9DS1) 
+
+
+callibration issues
+
+https://forum.arduino.cc/t/lsm9ds1-heading-values-are-affected-by-pitch-and-roll-after-calibration/693653
+
+possible solution
+
+https://forum.pololu.com/t/correcting-the-balboa-magnetometer/14315

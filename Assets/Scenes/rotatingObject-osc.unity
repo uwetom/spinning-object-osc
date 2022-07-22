@@ -556,14 +556,6 @@ MonoBehaviour:
   rotationObject: {fileID: 2503856997170157151}
   transparentMaterial: {fileID: 2100000, guid: 2505ceeb1c9939441bc8335e8cbb907c, type: 2}
   opaqueMaterial: {fileID: 2100000, guid: d23a4f99f445220499ad45661819a150, type: 2}
-  opacity: 1
-  opacitySlider: {fileID: 0}
-  xVal: 0
-  xSlider: {fileID: 0}
-  yVal: 0
-  ySlider: {fileID: 0}
-  zVal: 0
-  zSlider: {fileID: 0}
   speed: 0
   previousAngles: []
 --- !u!114 &5020959405346595489
@@ -618,7 +610,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d23a4f99f445220499ad45661819a150, type: 2}
+  - {fileID: 2100000, guid: f923c59623d2ec64ba06e89426df11ca, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -13,7 +13,7 @@ double pitch,roll;
 
 int AcXoff,AcYoff,AcZoff,GyXoff,GyYoff,GyZoff;
 
-const char* ssid     = "cpc01";
+const char* ssid     = "Deputised Object";
 const char* password = "";
 
 const int   rxPort   = 9000;

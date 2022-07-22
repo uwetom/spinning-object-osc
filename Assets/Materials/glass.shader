@@ -6,7 +6,7 @@
 		_Color("Color", Color) = (1, 1, 1, 1)
 		_EdgeColor("Edge Color", Color) = (1, 1, 1, 1)
 		_EdgeThickness("Silouette Dropoff Rate", float) = 1.0
-        _Opacity("Opacity",Range(0,1)) = 1.0 
+        _Opacity("Opacity",float) = 1.0 
 	}
 	
 	SubShader
