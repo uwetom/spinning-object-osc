@@ -20,7 +20,7 @@ static unsigned long lastPrint = 0; // Keep track of print time
 #define DECLINATION 0.19 // Declination (degrees) in Bristol, UK
 
 
-const char* ssid     = "cpc01";
+const char* ssid     = "Deputised Object";
 const char* password = "";
 
 const int   rxPort   = 9000;
@@ -33,19 +33,11 @@ void calcAttitude(float ax, float ay, float az, float mx, float my, float mz);
 
 void setup(){
   delay(10);
- /*
-  Wire.begin();
-  Wire.beginTransmission(MPU);
-  Wire.write(0x6B);
-  Wire.write(0x00);
-  Wire.endTransmission(true);
-  */
-  
+
   Serial.begin(9600);
 
   Wire.begin();
   
-
   if (imu.begin() == false) // with no arguments, this uses default addresses (AG:0x6B, M:0x1E) and i2c port (Wire).
   {
     Serial.println("Failed to communicate with LSM9DS1.");
@@ -57,14 +49,13 @@ void setup(){
     while (1);
   }
 
-  
+  imu.settings.temp.enabled = false;
+
   delay(1000);
  
   Serial.println("Done!\n");
 
-
   setupWIFI();
-  
 }
 
 void loop(){
@@ -84,20 +75,13 @@ void loop(){
     imu.readMag();
   }
 
-
   calcAttitude(imu.ax, imu.ay, imu.az,
                   -imu.my, -imu.mx, imu.mz);
                   
-
   OscWiFi.update();  // must be called to receive + send osc
 
-//  Serial.print("IP address: ");
- // Serial.println(WiFi.softAPIP());
-
- 
   OscWiFi.send("255.255.255.255", txPort, "/pos/", roll,pitch,heading);
   
-
   delay(50);
 }
 
@@ -108,21 +92,22 @@ void setupWIFI(){
     WiFi.mode(WIFI_AP);
     WiFi.softAP(ssid, NULL);
 
-   
     int tick = 0;
     while (++tick < 5) {
         delay(500);
         Serial.print(".");
     }
 
-  
 }
 
 
 void calcAttitude(float ax, float ay, float az, float mx, float my, float mz)
 {
   roll = atan2(ay, az);
-  pitch = atan2(-ax, sqrt(ay * ay + az * az));
+  
+  //pitch = atan2(-ax, sqrt(ay * ay + az * az));
+
+  pitch = atan2(ax, az);
 
   if (my == 0)
     heading = (mx < 0) ? PI : 0;
@@ -139,14 +124,23 @@ void calcAttitude(float ax, float ay, float az, float mx, float my, float mz)
   pitch *= 180.0 / PI;
   roll  *= 180.0 / PI;
 
+
+  heading = heading + 180;
+
+  roll = roll + 180;
+
+   pitch = pitch + 180;
+
+ //Serial.println(pitch);
+
+
  Serial.print(heading);
- Serial.print("' ");
+ Serial.print(" - ");
  Serial.print(pitch);
- Serial.print("' ");
- Serial.print(roll);
+ Serial.print(" - ");
+ Serial.println(roll);
  Serial.println(" ");
  
-  
-
+ 
   
 }
