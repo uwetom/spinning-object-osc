@@ -532,8 +532,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5685186871171708965}
-  - component: {fileID: 5020959405346595488}
   - component: {fileID: 5020959405346595489}
+  - component: {fileID: 5020959405346595488}
   m_Layer: 0
   m_Name: ImageToStl.com_deputised object pt - 11-01-22
   m_TagString: Untagged
@@ -550,22 +550,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5020959405346595487}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0aabed31fb0fc8a43ab89f18f815dd49, type: 3}
+  m_Script: {fileID: 11500000, guid: 84ad70992df9ec940b0448544e6c47fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rotationObject: {fileID: 2503856997170157151}
-  transparentMaterial: {fileID: 2100000, guid: 2505ceeb1c9939441bc8335e8cbb907c, type: 2}
-  opaqueMaterial: {fileID: 2100000, guid: d23a4f99f445220499ad45661819a150, type: 2}
-  opacity: 1
-  opacitySlider: {fileID: 0}
-  xVal: 0
-  xSlider: {fileID: 0}
-  yVal: 0
-  ySlider: {fileID: 0}
-  zVal: 0
-  zSlider: {fileID: 0}
+  transparencySensitivity: 5
+  transparencySmoothing: 20
   speed: 0
-  previousAngles: []
+  previousQuaternionDifferences: []
+  playbackSpeed: 0
 --- !u!114 &5020959405346595489
 MonoBehaviour:
   m_ObjectHideFlags: 0

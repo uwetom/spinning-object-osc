@@ -1,0 +1,16 @@
+{
+"companyName": "DefaultCompany",
+"productName": "spin_object",
+"productVersion": "0.1",
+"dataUrl": "WEBGL_BUILD_2.data.unityweb",
+"wasmCodeUrl": "WEBGL_BUILD_2.wasm.code.unityweb",
+"wasmFrameworkUrl": "WEBGL_BUILD_2.wasm.framework.unityweb",
+"graphicsAPI": ["WebGL 2.0"],
+"webglContextAttributes": {"preserveDrawingBuffer": false},
+"splashScreenStyle": "Dark",
+"backgroundColor": "#231F20",
+"cacheControl": {"default": "must-revalidate"},
+"developmentBuild": false,
+"multithreading": false,
+"unityVersion": "2019.4.13f1"
+}
