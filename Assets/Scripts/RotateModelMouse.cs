@@ -81,10 +81,7 @@ public class RotateModelMouse : MonoBehaviour
             previousAngles.RemoveAt(0);
         }
 
-
-
         transform.rotation = current;
-
 
         //store difference between current angle and last
     	float angle = Quaternion.Angle(previousAngle, current);
@@ -103,8 +100,7 @@ public class RotateModelMouse : MonoBehaviour
         if(newTransparency < 0.98f && !transparent){
             rotationObject.GetComponent<Renderer>().material = transparentMaterial;
 
-            
-
+        
            // rotationObject.GetComponent<Renderer>().material.OpacinewTransparency);
             transparent = true;
         }else if(newTransparency >= 0.98f && transparent){
@@ -182,7 +178,7 @@ public class RotateModelMouse : MonoBehaviour
         float calTransparency = 1.0f-(average/transparencySensitivity);
 
         //clamp transparency between 0 and 1
-        calTransparency = Mathf.Clamp(calTransparency,0.5f,1);
+        calTransparency = Mathf.Clamp(calTransparency,0.8f,1.0f);
 
         return calTransparency;
     }
